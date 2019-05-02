@@ -1,0 +1,81 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Agent List
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">Property</li>
+                    </ul>
+                    <h2>Property</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div>
+
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div>
+
+                        {% if allocated_pr %}
+                        
+                        <table class="table fixed_header">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Rent</th>
+                                    <th>Deposite</th>
+                                    <th>Description</th>
+                                    <th>Sold Out</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for property in allocated_pr %}
+
+                                <tr>
+                                    <td>{{ property.pr_address}} </td>
+
+                                    <td> {{property.pr_master.cln_master.msp_name}}
+                                        {{ property.pr_master.cln_master.msp_address }}</td>
+                                    <td>{{ property.pr_rent }}</td>
+                                    <td>{{ property.pr_deposite }}</td>
+                                    <td>{{ property.pr_description }}</td>
+
+
+                                    <td>
+                                        {% if property.pr_is_active == True %}
+                                        Active
+                                        {% else %}
+                                        Sold out
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% else %}
+                        <strong>No Properties.</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

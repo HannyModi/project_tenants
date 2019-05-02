@@ -1,0 +1,101 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Add Tenent
+{% endblock %}
+{% block link %}
+
+<link href="{% static "css/datepickercss.css" %}" rel="stylesheet" />
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="inner-heading">
+          <ul class="breadcrumb">
+            <li><a href="{% url 'agent_index' %}">Home</a> <i class="icon-angle-right"></i></li>
+            <li class="active">Add Tenant</li>
+          </ul>
+          <h2>Add Tenant</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="container">
+  <div class="container">
+    <div class="row">
+      <div class="span8">
+   <div class="row">
+      <div class="span10">
+          <div class="radio">
+      <input type="radio" id="new_tenant" name="agent_select" value="" checked> New Tenant
+          </div>
+      <div class="radio">
+      <input type="radio" id="old_tenant" value="" name="agent_select">Active Previous Tenant</div>
+   </div>
+      <br/><br/>
+      
+        <form action="addTenant" method="post" enctype="multipart/form-data" role="form" class="contactForm">
+          <div id="Add_agent_again" class="hidden">  
+      
+      </div>
+         
+          {% csrf_token %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+          {{hidden.errors}}
+          {% endfor %}
+        
+          <div id="tenentimage" class="hidden row">
+          <div class="span4">
+          Tenant Profile Picture:
+          <img alt="Tenant Profile Picture" id="tenant_profile" ></img>
+          </div><div class="span4">
+          Tenant Identity Document:
+          <img id="tenant_document" alt="Tenant identity Document" ></img></div>
+          <br/><br/>
+          </div>
+          {% for field in form.visible_fields %}
+          {{ field.errors }}
+          {{ field.help_text }}
+          {{ field }} <br /><br/>
+          {% endfor %}
+         
+           <div id="Add_new_agent">
+          {% comment %} Enter Tenant Name:
+          <input type="text" name="tenant_name" maxlength="25" id="id_tn_name"><br></br> {% endcomment %}
+          Joining Date:
+          <input type="date" name="date_joined" id="datenew" />
+          <script>
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+                if(dd<10){
+                        dd='0'+dd
+                    } 
+                    if(mm<10){
+                        mm='0'+mm
+                    } 
+                maxdate = yyyy+'-'+mm+'-'+dd;
+                document.getElementById("datenew").setAttribute("max", maxdate);
+          </script> 
+          <br/></br/>
+          </div>
+ 
+          <button class="btn btn-success btn-medium" type="submit" value="Submit" />Add Tenant</button>
+
+        </form>
+   
+      </div>
+
+    </div>
+  </div>
+
+</section>
+{% endblock %}
+{% comment %} {% block js %}
+<script src="{% static 'js/datepickerjs.js' %}"></script>
+{% endblock %} {% endcomment %}

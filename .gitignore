@@ -1,0 +1,13 @@
+.Python
+.vscode
+*.pyc
+/env_tenant/
+.DS_Store
+project_tenant/project_tenant/__pycache__/
+project_tenant/tenant/migrations/
+project_tenant/media/agents/profiles/
+project_tenant/media/rent/acceptance_latter
+project_tenant/media/rent/rent_recipt
+project_tenant/media/rent/tenancy/agreement
+project_tenant/media/tenant/documents
+project_tenant/media/tenant/profiles

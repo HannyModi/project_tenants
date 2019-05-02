@@ -1,0 +1,10 @@
+
+{% if rows %}
+    <select id="move_from" name="move_from" style="width:100%;height:250px;" multiple>
+        {% for row in rows %}
+            <option value="{{ row.id }}">{{ row.pr_address}} >> {{ row.pr_master.cln_alias }}</option>
+        {% endfor %}
+    </select>  
+{% else %}
+<Strong> No properties available in selected Master property reference</strong>
+{% endif %}

@@ -1,0 +1,118 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Agent List
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="inner-heading">
+          <ul class="breadcrumb">
+            <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i></li>
+            <li class="active">Property</li>
+          </ul>
+          <h2>Property</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="container">
+  <div class="container">
+    <div class="row">
+      <div class="span10">
+
+          <div style="background-image: url('images/bg-01.jpg');">
+            <div>
+              <form method="POST" enctype="multipart/form-data" action="{% url 'allocate_property' %}" class="contactForm">
+                {% csrf_token %}
+                <input type="hidden" name="page" value="{{ page }}" />
+                {% if pobj %}
+                  <input type="hidden" name="pselect" value="{{ pobj.id }}" />
+                  <label> Address :</label> <input type="text" id="pr_address"
+                    value="{{ pobj.pr_address }} {{ pobj.pr_master.cln_master.msp_name }} {{ pobj.pr_master.cln_master.msp_address }}" disabled /></br><br />
+                {% elif prp %}
+                  <input type="hidden" name="pselect" value="{{ prp.id }}" />
+                  <label> Property :</label> <input type="text" 
+                  value="{{ prp.pa_property.pr_address }}, {{ prp.pa_property.pr_master.cln_master.msp_name }}, {{ prp.pa_property.pr_master.cln_master.msp_address }}" disabled /></br><br />
+                {% elif plist %}
+                  <label> Property:</label><select style="width:75%;" required id="pselect_id" name="pselect">
+                    <option value="" selected>Select Property</option>
+                    {% for p in plist %}
+                    <option data-rent={{p.vs_property.pr_rent}} value={{p.vs_property.id}}>{{ p.vs_property.pr_address }} {{ p.vs_property.pr_master.cln_master.msp_name }} {{ p.vs_property.pr_master.cln_master.msp_address }} Rent:{{p.vs_property.pr_rent}}/- </option>
+                    {% endfor %}
+                  </select><br /><br />
+                  
+                {% else %}
+                  <label>
+                  You have no unallocated visited proeprty for selected tenant</label>
+                {% endif %}
+
+                {% if Tenant_list %}
+                <label>
+                Select Tenant:</label><select style="width:75%;" name="tselect">
+                  <option value="" selected>Select Tenant</option>
+                  {% for tenant in Tenant_list %}
+                  <option value={{tenant.id}}>{{tenant.tn_name}}</option>
+                  {% endfor %}
+                </select><br /><br />
+                
+                {% elif ten %}
+                <input type="hidden" name="tselect" value="{{ ten.id }}" />
+              <label> Tenant :</label> <input type="text" id="tenant" value="{{ ten.tn_name }}" name="tselect" disabled /></br><br />
+        
+                {% else %}
+                <label>
+                You have no tenants to allocate property.</br>
+                 Either all tenants are allocated or you have not registered any.</br>
+                 <a data-toggle="tooltip" title="Add new tenant to system." href="{% url 'addTenant' %}">New tenant?</a></label>
+                {% endif %}
+                <label>
+                Start Date of agreement :</label><input type="date" style="width:75%;" id="agreement_start_date" name='start_agreement_date'/>
+                <br/><br/>
+                <label>
+                End Date of agreement :</label><input type="date" style="width:75%;" id='agreement_end_date' name='end_agreement_date'/>
+                  <script>
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth()+1; //January is 0!
+                    var yyyy = today.getFullYear();
+                    if(dd<10){
+                            dd='0'+dd
+                        } 
+                        if(mm<10){
+                            mm='0'+mm
+                        } 
+                    mindate = yyyy+'-'+mm+'-'+dd;
+                    document.getElementById("agreement_end_date").setAttribute("min", mindate);
+                  </script>
+                <br/><br/>
+                <label>
+                Property Acceptance Letter :</label>
+                <input type="file" accept="image/gif, image/jpeg, image/png" required name='pa_agreement_letter'/>
+                <br/><br/>
+                <label>
+                Tanancy Agreement :</label>
+                <input type="file" placeholder="Uplode Image" accept="image/gif, image/jpeg, image/png" required name='tenancy_agreement'/>
+                <br/><br/>
+                <label>
+                Final Rent :</label>{% if prp %}
+                <input type="text" class="decimal_input" name="final_rent" style="width:75%;" value="{{prp.pa_final_rent}}" disabled /><br/><br/>
+                {% else %}
+                <input type="text" class="decimal_input" style="width:75%;" name="final_rent"/><br/><br/>
+
+                {% endif %}
+
+
+                <button type="submit" class="btn btn-rounded btn-theme" id="allocatebtn">Allocate</button>
+              </form>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

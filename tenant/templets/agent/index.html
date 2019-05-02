@@ -1,0 +1,155 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Agent Home
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="inner-heading">
+          <ul class="breadcrumb">
+            <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container">
+
+    <div id="near_to_expire_agreements">
+      <h1>Soon to expire Agreement</h1>
+      <div class="row clearfix">
+        {% if neartoend_agreement %}
+        {% for neartoend in neartoend_agreement %}
+         <div class="span4">
+          <a href="{% url 'TenantDetails' neartoend.pa_tenant.pk %}"><span class="card bg-secondary text-white">
+            <span class="card-body" style="font-size: 0.4cm">
+              Property:{{neartoend.pa_property.pr_address}} {{neartoend.pa_property.pr_master.cln_master.msp_name}}<br />
+              Tenant:{{neartoend.pa_tenant.tn_name}} <br />
+              Agreement End Date:{{neartoend.pa_agreement_end_date}}
+            </span>
+          </span></a>
+        </div>
+        {% if forloop.counter|divisibleby:"3" %}
+      </div>
+      <br/>
+      <div class="row clearfix">
+        {% endif %}
+
+        {% endfor %}
+        {% else %}
+        <h4><center>No Agreement ending in month</center></h4>
+        <br>
+        {% endif %}
+      </div>
+
+    </div>
+    <hr>
+    <h1><center>Reports</center></h1>
+    <div class="row">
+      <div class='span6'>
+        <div id="rentcollectionchart">
+
+          <div class="chart-container">
+            <div id="container"></div>
+
+            <script src="{% static "js/custom/highcharts.js" %}"></script>
+
+            <script>
+              Highcharts.chart('container', {
+                chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  type: 'pie'
+                },
+                title: {
+                  text: 'Tenant wise Rent Collection'
+                },
+                plotOptions: {
+                  pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                      enabled: false
+                    },
+                    showInLegend: true
+                  },
+                  series: {
+                    dataLabels: {
+                      enabled: true,
+
+                    }
+                  },
+                },
+                series: [{
+                  name: 'Total',
+                  colorByPoint: true,
+                  data: [{% for tenant in tenantname %}{
+                  name: '{{tenant.tn_name}}',
+                  y: {% if tenant.total == None %} 0 {% else %} {{ tenant.total }} {% endif %},
+                                  },
+                {% endfor %} 
+                                    ]
+                              }],
+                          });
+            </script>
+          </div>
+        </div>
+      </div>
+
+      <div class='span6'>
+        <div id="monthlyrentcollectionchart">
+          <div class="chart-container">
+            <div id="container2"></div>
+            <script>
+              Highcharts.chart('container2', {
+                chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  type: 'pie'
+                },
+                title: {
+                  text: 'Monthly Rent Collection'
+                },
+                plotOptions: {
+                  pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                      enabled: false
+                    },
+                    showInLegend: true
+                  },
+                  series: {
+                    dataLabels: {
+                      enabled: true,
+                    }
+                  },
+                },
+                series: [{
+                  name: 'Total',
+                  colorByPoint: true,
+                  data: [{% for months in monthly_rent %}{
+                  name: '{{months.month|date:"F, Y" }}',
+                  y: {{ months.sum }},
+                                },
+                {% endfor %} 
+                                  ]
+                            }],
+                        });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

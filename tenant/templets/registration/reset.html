@@ -1,0 +1,40 @@
+{% extends "password_reset/base.html" %}{% load i18n %}
+{% block titleblock %}Reset Password{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<div class="inner-heading">
+					<ul class="breadcrumb">
+						<li><a href="{% url 'index' %}">Home</a> <i class="icon-angle-right"></i></li>
+						<li class="active">Forgot Password</li>
+					</ul>
+					<h2>Email Sent</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section id="container">
+	<div class="container">
+		<div class="row">
+			<div class="span8">
+				{% if invalid %}{% url "password_reset_recover" as recovery_url %}
+				<p>{% blocktrans %}Sorry, this password reset link is invalid. You can still <a
+						href="{{ recovery_url }}">request a new one</a>.{% endblocktrans %}</p>
+				{% else %}
+				<p>{% blocktrans %}Hi, <strong>{{ username }}</strong>. Please choose your new
+					password.{% endblocktrans %}</p>
+				<form method="post" action="{% url "password_reset_reset" token %}">
+					{% csrf_token %}
+					{{ form.as_p }}
+					<p><input type="submit" class="btn btn-theme " value="{% trans "Set new password" %}"></p>
+				</form>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</section>
+
+{% endblock %}

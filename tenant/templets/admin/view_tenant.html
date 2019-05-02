@@ -1,0 +1,326 @@
+{% extends 'admin/Base.html'%}
+{% load staticfiles%}
+{% block titleblock %}View Unmanaged Tenants{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'admin_index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">View Unmanaged Tenants</li>
+                    </ul>
+                    <h2>Unmanaged Tenants</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--Modal Starts-->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Tenant Agent Allocation</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id='id' data-id=''>
+                Agent:
+                <select id="selectedagent" style='width:75%' required>
+                    <option selected="selected" value="">Select Agent</option>
+                    {% for agent in agents %}
+                    <option value={{agent.id}}>{{agent.first_name}} {{agent.last_name}}</option>
+                    {% endfor %}
+                </select>
+                </br>
+                </br>
+            </div>
+            <div class="modal-footer">
+                <button style="align-self: center;" class="btn btn-info btn-rounded "
+                    id="allocate_unmanaged_tenant">Allocate</button>
+                <button class="btn btn-danger btn-rounded " id="close1">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="imgDiv" class="modal2">
+    <span class="close">&times;</span>
+    <img class="modal2-content" id="img01">
+    <div id="caption"></div>
+</div>
+
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+                <div class="tabs">
+                    <ul class="nav nav-tabs bold">
+                        <li class="active"><a href="#all" data-toggle="tab">All Tenants</a></li>
+                        <li class=""><a href="#allocated" data-toggle="tab">Allocated Tenants</a></li>
+                        <li class=""><a href="#unallocated" data-toggle="tab">Unallocated Tenants</a></li>
+
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="all">
+                            <div>
+
+                                <div id="tbl_tenants" class="item ">
+
+                                    {% if tenantlist %}
+                                    <table class="table fixed_header">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>Name</th>
+                                                <th>Contact</th>
+                                                <th>Profile</th>
+                                                <th>Status</th>
+                                                <th>Clone</th>
+                                                <th>Master Property</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tenant in tenantlist %}
+
+                                            <tr>
+                                                <td>{{ tenant.tn_name }}</td>
+                                                <td>{{ tenant.tn_contact }}</td>
+
+                                                <td>
+                                                    <img id='p_image' class="pimg"
+                                                        src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                        style="height:50px; width:100px;"
+                                                        alt="{{tenant.tn_name}}'s Profile Picture">
+                                                    
+                                                </td>
+
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    Allocated
+                                                    {% else %}
+                                                    Not Allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_clone}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_master_property}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                              
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    {% else %}
+
+                                    There are No Tenants
+
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="allocated">
+                            <div>
+
+                                <div id="tbl_active_tenants" class="item ">
+
+                                    {% if tenantlist %}
+                                    <table class="table fixed_header">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>Name</th>
+                                                <th>Contact</th>
+                                                <th>Profile</th>
+                                                <th>Status</th>
+                                                <th>Clone</th>
+                                                <th>Master Property</th>
+                                                <th>Allocated clone</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tenant in tenantlist %}
+                                            {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                            <tr>
+                                                <td>{{ tenant.tn_name }}</td>
+                                                <td>{{ tenant.tn_contact }}</td>
+
+                                                <td>
+                                                    <img id='p_image' class="pimg"
+                                                        src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                        style="height:50px; width:100px;"
+                                                        alt="{{tenant.tn_name}}'s Profile Picture">
+                                                    <div id="imgDiv" class="modal2">
+                                                        <span class="close">&times;</span>
+                                                        <img class="modal2-content" id="img01">
+                                                        <div id="caption"></div>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    Allocated
+                                                    {% else %}
+                                                    Not Allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_clone}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_master_property}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <button id="allocate_clone"
+                                                        class="allocate_clone btn btn-success btn-rounded btn-small"
+                                                        data-msp="{{tenant.tn_master_property_id}}"
+                                                        data-id="{{ tenant.tn_clone_id }}">Allocate</button>
+                                                </td>
+                                             
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    {% else %}
+
+                                    There are No Tenants
+
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="unallocated">
+                            <div>
+
+                                <div id="tbl_inactive_tenants" class="item ">
+
+                                    {% if tenantlist %}
+                                    <table class="table fixed_header">
+                                        <thead>
+                                            <tr class="success">
+                                                <th style="width: max-content">
+                                                    <input type='checkbox' id="all_unmanaged" onchange="if($(this).attr('checked')){
+                                                            $('.unmanaged_tenant').attr('checked','checked')
+                                                            }
+                                                            else{
+                                                                $('.unmanaged_tenant').removeAttr('checked')
+                                                                }">
+                                                <th>Name</th>
+                                                <th>Contact</th>
+                                                <th>Profile</th>
+                                                <th>Status</th>
+                                                <th>Clone</th>
+                                                <th>Master Property</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tenant in tenantlist %}
+                                            {% if tenant.tn_status == 0 or tenant.tn_status == 1 %}
+                                            <tr>
+                                                <td style="width: max-content"><input type="checkbox" value="{{tenant.id}}"
+                                                        class="unmanaged_tenant"
+                                                        onchange="if ($('.unmanaged_tenant:checked').length == $('.unmanaged_tenant').length) {$('#all_unmanaged').attr('checked','checked')}else{$('#all_unmanaged').removeAttr('checked')}">
+                                                </td>
+                                                <td>{{ tenant.tn_name }}</td>
+                                                <td>{{ tenant.tn_contact }}</td>
+
+                                                <td>
+                                                    <img id='p_image' class="pimg"
+                                                        src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                        style="height:50px; width:100px;"
+                                                        alt="{{tenant.tn_name}}'s Profile Picture">
+                                                    <div id="imgDiv" class="modal2">
+                                                        <span class="close">&times;</span>
+                                                        <img class="modal2-content" id="img01">
+                                                        <div id="caption"></div>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    Allocated
+                                                    {% else %}
+                                                    Not Allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_clone}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    
+                                                    {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                    {{tenant.tn_master_property}}
+                                                    {% else %}
+                                                    Property is not allocated.
+                                                    
+                                                    {% endif %}
+                                                </td>
+                                               
+
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <input type="button" class="btn-success btn-rounded" value="Allocate"
+                                    onclick="if ($('.unmanaged_tenant:checked').length == 0) {alert('Select atleast one Tenant.')}else{$('#myModal').css('display', 'block');}">
+                            
+                                    {% else %}
+                                    There are No Tenants
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</section>
+{% endblock %}

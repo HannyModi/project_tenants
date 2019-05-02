@@ -1,0 +1,413 @@
+{% extends 'agent/Base.html'%}
+{% load staticfiles%}
+{% block titleblock %}View Tenants{% endblock %}
+{% block bodyblock %}
+    <section id="inner-headline">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="inner-heading">
+                        <ul class="breadcrumb">
+                            <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i
+                                    class="icon-angle-right"></i></li>
+                            <li class="active">View Tenants</li>
+                        </ul>
+                        <h2>View Tenants</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--Modal Starts-->
+    <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+
+    <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change Tenant Status</h4>
+            </div>
+            <div class="modal-body">
+                    <input type="hidden" id='id' data-id =''>
+                    Name : <input type="text" disabled id="tn_name" style="width:100%"  /></br></br>
+                    {% comment %} Status : <input type="text" disabled id="tn_status" /></br></br> {% endcomment %}
+                    New Status : <select name="status" style="width:100%" id="tn_status" required>               
+                    <option value="0">Property Not Allocated</option>
+                    <option value="1">Visit</option>
+                    <option value="2">Deal Accepted,aggrement under process</option>
+                    <option value="3">Property handovered</option>
+                    </select>
+                    
+                    </br>
+                    </br>
+            </div>
+            <div class="modal-body hidden">
+                Visited Properties: <select name="property" id="tenant_visit" style="width:100%" class="hidden" required></br>
+                    
+                    </select>
+                    
+                    </br>
+                    </br>
+                    <div  id='tenant_rent' >
+                    Final Decided Rent: <input id="rent" style="width:100%"  class='decimal_input' type ="number" name='rent'>  
+                    </div>
+                    </br>
+            </div>
+            <div class="modal-footer">
+                <center>  <button class="btn btn-info btn-rounded " id="save_tenant_status">Save</button>
+                    <button class="btn btn-danger btn-rounded " id="close1">Cancel</button></center>
+            </div>
+            </div>
+        
+        </div> 
+    </div>
+    <!--Modal Ends--> 
+    <div id="imgDiv" class="modal2">
+        <span class="close">&times;</span>
+        <img class="modal2-content" id="img01">
+        <div id="caption"></div>
+    </div>
+
+    <section id="container">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+
+                    <div class="tabs">
+                    <ul class="nav nav-tabs bold">
+                    <li class="active"><a href="#all" data-toggle="tab">All Tenants</a></li>
+                        <li class=""><a href="#active" data-toggle="tab">Active Tenants</a></li>
+                        <li class=""><a href="#inactive" data-toggle="tab">Inactive Tenants</a></li>
+                    
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="all">
+                        <div>
+                            {% if tenantlist %}
+                            <input placeholder="Enter tenant's name to search" data-status="all" class="span10 search_tenant" id="search_all_tenant" type="text">
+                            {% endif %}
+                            <div id="tbl_tenants" class="item ">
+
+                                {% if tenantlist %}
+                                <table class="table fixed_header">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Name</th>
+                                            <th>Contact</th>
+                                            <!-- <th colspan="2">Email</th> -->
+                                            <th colspan="2">Address</th>
+                                            <th>Profile</th>
+                                            <th>Tenant Document</th>
+                                            <th>Status</th>
+                                            <th>Property</th>
+                                            <th>Action</th>                                        
+                                            <th>Operation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for tenant in tenantlist %}
+
+                                            <tr>
+                                                <td><a data-toggle="tooltip" title="View Details" class='data-tn_name' href="{% url 'TenantDetails' tenant.id %}">{{ tenant.tn_name }}</a></td>
+                                                <td>{{ tenant.tn_contact }}</td>
+                                                <!-- <td colspan="2">{{ tenant.email }}</td> -->
+                                                <td colspan="2">{{ tenant.tn_permanent_address }}</td>
+
+                                                <td>
+                                                    <img id='p_image' class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                        style="height:50px; width:100px;"
+                                                        alt="{{tenant.tn_name}}'s Profile Picture">
+                                                    
+                                                </td>
+
+                                                <td>
+                                                    <img class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_document }}"
+                                                        style="height:50px; width:100px;" alt="{{tenant.tn_name}}'s Document">
+                                                    
+                                                </td>
+                                            
+                                                <td>
+                                                    {% if tenant.tn_is_active == True %}
+                                                        <a {% if tenant.tn_is_active == True %} class="change_status" data-toggle="tooltip" data-id='{{tenant.id}}' data-tnname='{{tenant.tn_name}}' data-status='{{tenant.tn_status}}' title="Change Status" {% endif %}>
+                                                        {% if tenant.tn_status == 0 %}Property Not Allocated{% elif tenant.tn_status == 1 %}Visit to property{% elif tenant.tn_status == 2 %}deal Accepted aggrement under process
+                                                        {% elif tenant.tn_status == 3 %}Property Handovered{% endif %}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if tenant.tn_is_active == True %}
+                                                        {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                        {{tenant.pr_address}}
+                                                        {% else %}
+                                                        Property is not allocated.
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if tenant.tn_is_active == True %}
+                                                        {% if tenant.tn_status == 3 %}
+                                                            <div class="dropdown">
+                                                                    <button data-tid="{{ tenant.id }}" class="btn btn-danger btn-rounded btn-small dropdownlink">Option</button>
+                                                                    <div class="dropdown-content">
+                                                                        <a data-tid="{{ tenant.id }}" data-toggle="tooltip" title="Deallocate Property from Tenant" class="deallocate_tenant"> Deallocate </a>
+                                                                        <a data-tid="{{ tenant.id }}" class="add_rent" data-toggle="tooltip" title="Add Rent">Rent</a>
+                                                                    </div>
+                                                                </div>
+                                                        {% elif tenant.tn_status == 2 %}
+                                                        <button data-tid="{{ tenant.id }}"  class="btn btn-info btn-rounded btn-small allocate_tenant">Handover</button>
+                                                        {% elif tenant.tn_status == 1 or tenant.tn_status == 0  %}
+                                                        <button data-tid="{{ tenant.id }}"  class="btn btn-success btn-rounded btn-small allocate_tenant">Allocate</button>
+                                                        {% endif %}
+                                                    {% endif %}
+
+                                                    
+                                                </td>
+                                                <td>
+                                                {% if tenant.tn_is_active == True %}
+                                                    <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small deactivate" id="dectivate" >Remove</button>
+                                                    {% else %}
+                                                    <button data-id="{{tenant.id}}" class="btn btn-success btn-rounded btn-small activate" id="activate" >Activate</button>
+                                                {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                {% else %}
+
+                                There are No Tenants
+
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="active">
+                        <div>
+                            {% if tenantlist %}
+                            <input placeholder="Enter tenant's name to search" class="span10 search_tenant" data-status="active" id="search_active_tenant" type="text">
+                            {% endif %}
+                            <div id="tbl_active_tenants" class="item ">
+
+                                {% if tenantlist %}
+                                <table class="table fixed_header">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Name</th>
+                                            <th>Contact</th>
+                                            <!-- <th colspan="2">Email</th> -->
+                                            <th colspan="2">Address</th>
+                                            <th>Profile</th>
+                                            <th>Tenant Document</th>
+                                            <th>Status</th>
+                                            <th>Property</th>
+                                            <th>Action</th>                                        
+                                            <th>Operation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% for tenant in tenantlist %}
+                                            {% if tenant.tn_is_active == True %}
+                                                <tr>
+                                                    <td><a data-toggle="tooltip" title="View Details" class='data-tn_name' href="{% url 'TenantDetails' tenant.id %}">{{ tenant.tn_name }}</a></td>
+                                                    <td>{{ tenant.tn_contact }}</td>
+                                                    <!-- <td colspan="2">{{ tenant.email }}</td> -->
+                                                    <td colspan="2">{{ tenant.tn_permanent_address }}</td>
+
+                                                    <td>
+                                                        <img id='p_image' class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                            style="height:50px; width:100px;"
+                                                            alt="{{tenant.tn_name}}'s Profile Picture">
+                                                        <div id="imgDiv" class="modal2">
+                                                            <span class="close">&times;</span>
+                                                            <img class="modal2-content" id="img01">
+                                                            <div id="caption"></div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <img class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_document }}"
+                                                            style="height:50px; width:100px;" alt="{{tenant.tn_name}}'s Document">
+                                                        <div id="imgDiv" class="modal2">
+                                                            <span class="close">&times;</span>
+                                                            <img class="modal2-content" id="img01">
+                                                            <div id="caption"></div>
+                                                        </div>
+                                                    </td>
+                                                
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            <a {% if tenant.tn_is_active == True %} class="change_status" data-toggle="tooltip" data-id='{{tenant.id}}' data-tnname='{{tenant.tn_name}}' data-status='{{tenant.tn_status}}' title="Change Status" {% endif %}>
+                                                            {% if tenant.tn_status == 0 %}Property Not Allocated{% elif tenant.tn_status == 1 %}Visit to property{% elif tenant.tn_status == 2 %}deal Accepted aggrement under process
+                                                            {% elif tenant.tn_status == 3 %}Property Handovered{% endif %}
+                                                            </a>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                            {{tenant.pr_address}}
+                                                            {% else %}
+                                                            Property is not allocated.
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            {% if tenant.tn_status == 3 %}
+                                                                <div class="dropdown">
+                                                                    <button data-tid="{{ tenant.id }}" class="btn btn-danger btn-rounded btn-small dropdownlink">Option</button>
+                                                                    <div class="dropdown-content">
+                                                                        <a data-tid="{{ tenant.id }}" data-toggle="tooltip" title="Deallocate Property from Tenant" class="deallocate_tenant"> Deallocate </a>
+                                                                        <a data-tid="{{ tenant.id }}" class="add_rent" data-toggle="tooltip" title="Add Rent">Rent</a>
+                                                                    </div>
+                                                                </div>
+
+                                                            {% elif tenant.tn_status == 2 %}
+                                                            <button data-tid="{{ tenant.id }}"  class="btn btn-info btn-rounded btn-small allocate_tenant">Handover</button>
+                                                            {% elif tenant.tn_status == 1 or tenant.tn_status == 0  %}
+                                                            <button data-tid="{{ tenant.id }}"  class="btn btn-success btn-rounded btn-small allocate_tenant">Allocate</button>
+                                                            {% endif %}
+                                                        {% endif %}
+
+                                                        
+                                                    </td>
+                                                    <td>
+                                                    {% if tenant.tn_is_active == True %}
+                                                        <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small deactivate" id="dectivate" >Remove</button>
+                                                        {% else %}
+                                                        <button data-id="{{tenant.id}}" class="btn btn-success btn-rounded btn-small activate" id="activate" >Activate</button>
+                                                    {% endif %}
+                                                    </td>
+
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                {% else %}
+
+                                There are No Tenants
+
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="inactive">
+                        <div>
+                            {% if tenantlist %}
+                            <input placeholder="Enter tenant's name to search" class="span10 search_tenant" data-status="inactive" id="search_active_tenant" type="text">
+                            {% endif %}
+                            <div id="tbl_inactive_tenants" class="item ">
+
+                                {% if tenantlist %}
+                                <table class="table fixed_header">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Name</th>
+                                            <th>Contact</th>
+                                            <!-- <th colspan="2">Email</th> -->
+                                            <th colspan="2">Address</th>
+                                            <th>Profile</th>
+                                            <th>Tenant Document</th>
+                                            <th>Status</th>
+                                            <th>Property</th>
+                                            <th>Action</th>                                        
+                                            <th>Operation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% for tenant in tenantlist %}
+                                            {% if tenant.tn_is_active == False %}
+                                                <tr>
+                                                    <td><a data-toggle="tooltip" title="View Details" class='data-tn_name' href="{% url 'TenantDetails' tenant.id %}">{{ tenant.tn_name }}</a></td>
+                                                    <td>{{ tenant.tn_contact }}</td>
+                                                    <!-- <td colspan="2">{{ tenant.email }}</td> -->
+                                                    <td colspan="2">{{ tenant.tn_permanent_address }}</td>
+
+                                                    <td>
+                                                        <img id='p_image' class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                                            style="height:50px; width:100px;"
+                                                            alt="{{tenant.tn_name}}'s Profile Picture">
+                                                        <div id="imgDiv" class="modal2">
+                                                            <span class="close">&times;</span>
+                                                            <img class="modal2-content" id="img01">
+                                                            <div id="caption"></div>
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <img class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_document }}"
+                                                            style="height:50px; width:100px;" alt="{{tenant.tn_name}}'s Document">
+                                                        <div id="imgDiv" class="modal2">
+                                                            <span class="close">&times;</span>
+                                                            <img class="modal2-content" id="img01">
+                                                            <div id="caption"></div>
+                                                        </div>
+                                                    </td>
+                                                
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            <a {% if tenant.tn_is_active == True %} class="change_status" data-toggle="tooltip" data-id='{{tenant.id}}' data-tnname='{{tenant.tn_name}}' data-status='{{tenant.tn_status}}' title="Change Status" {% endif %}>
+                                                            {% if tenant.tn_status == 0 %}Property Not Allocated{% elif tenant.tn_status == 1 %}Visit to property{% elif tenant.tn_status == 2 %}deal Accepted aggrement under process
+                                                            {% elif tenant.tn_status == 3 %}Property Handovered{% endif %}
+                                                            </a>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                                                            {{tenant.pr_address}}
+                                                            {% else %}
+                                                            Property is not allocated.
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if tenant.tn_is_active == True %}
+                                                            {% if tenant.tn_status == 3 %}
+                                                                <div class="dropdown">
+                                                                    <button data-tid="{{ tenant.id }}" class="btn btn-danger btn-rounded btn-small dropdownlink">Option</button>
+                                                                    <div class="dropdown-content">
+                                                                        <a data-tid="{{ tenant.id }}" data-toggle="tooltip" title="Deallocate Property from Tenant" class="deallocate_tenant"> Deallocate </a>
+                                                                        <a data-tid="{{ tenant.id }}" class="add_rent" data-toggle="tooltip" title="Add Rent">Rent</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% elif tenant.tn_status == 2 %}
+                                                            <button data-tid="{{ tenant.id }}"  class="btn btn-info btn-rounded btn-small allocate_tenant">Handover</button>
+                                                            {% elif tenant.tn_status == 1 or tenant.tn_status == 0  %}
+                                                            <button data-tid="{{ tenant.id }}"  class="btn btn-success btn-rounded btn-small allocate_tenant">Allocate</button>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                    {% if tenant.tn_is_active == True %}
+                                                        <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small deactivate" id="dectivate" >Remove</button>
+                                                    {% else %}
+                                                        <button data-id="{{tenant.id}}" class="btn btn-success btn-rounded btn-small activate" id="activate" >Activate</button>
+                                                    {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                    There are No Tenants
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

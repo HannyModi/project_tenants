@@ -1,0 +1,41 @@
+.container {
+background-color: #eee;
+padding: 20px;
+max-width: 350px;
+margin: 20px auto 0 auto;
+}
+
+h1 {
+margin-top: 0;
+}
+
+.container div {
+margin: 1em 0;
+}
+
+label {
+display: block;
+font-weight: bold;
+}
+
+input {
+width: 12em;
+padding: .4em;
+font-size: 1.5em;
+font-family: Consolas, monospace;
+}
+
+.altfield {
+margin-left: 1em;
+background-color: #efefef;
+padding:.2em;
+color: #c00;
+border: none;
+}
+
+.p {
+text-align: center;
+font-size: 14px;
+padding-top: 120px;
+}
+

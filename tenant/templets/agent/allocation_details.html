@@ -1,0 +1,110 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+tenant Profile
+{% endblock %}
+
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i></li>
+                        <li class="active">Property Allocation details</li>
+                    </ul>
+                    <h2>Property Allocation details</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span5">
+                <div style="background-imtne: url('imtnes/bg-01.jpg');">
+                    <div class="box flyIn animated fadeInUp">
+                         {% if allocation.pa_is_allocated == True %}
+                           <h6><strong>Allocation Details</strong></h6>
+                            <table style="border-spacing:125px;">
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Property Name:</b></td>
+                                    <td style="padding:10px;"> {{allocation.pa_property.pr_address}}, {{allocation.pa_property.pr_master.cln_master.msp_name}}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Address:</b></td>
+                                    <td style="padding:10px;">{{allocation.pa_property.pr_master.cln_master.msp_address}}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Rent</b></td>
+                                    <td style="padding:10px;">{{ allocation.pa_property.pr_rent }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Tenant Name:</b></td>
+                                    <td style="padding:10px;">{{ allocation.pa_tenant.tn_name }}</td>
+                                </tr>
+
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Agreement Start Date</b></td>
+                                    <td style="padding:10px;">{% if allocation.pa_agreement_date %}{{ allocation.pa_agreement_date }}{% else %}Agreement Under Process {% endif %}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Agreement End Date</b></td>
+                                    <td style="padding:10px;">{% if allocation.pa_agreement_date %}{{ allocation.pa_agreement_end_date }}{% else %}Agreement Under Process {% endif %}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Decided Rent:</b></td>
+                                    <td style="padding:10px;">{{ allocation.pa_final_rent }}</td>
+                                </tr>
+                                {% if allocation.pa_agreement_date %}
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Acceptance Letter:</b></td>
+                                    <td style="padding:10px;"><img src="{{ MEDIA_URL }}{{allocation.pa_acceptance_letter}}"></td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Tenancy Agreement</b></td>
+                                    <td style="padding:10px;"><img src="{{ MEDIA_URL }}{{allocation.pa_tenancy_agreement}}"></td>
+                                </tr>
+
+
+                                {% endif %}
+                                
+                            </table>
+                        {% else %}
+                          <strong>Property is not allocated.</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="span1"></div>            
+            <div class="span6">
+                
+                    <h6><strong>Rent Details</strong></h6>
+                    <table class="table fixed_header">
+                        <thead>
+                          <tr>
+                            <th>Month</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for month in months %}
+                          <tr>
+                              {% for m in month %}
+                            <td>{{m}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% if unpaidflag == True%}
+                        <center>  <button type="button" class="btn btn-rounded btn-theme add_rent" data-pid={{allocation.pa_property.id}}>Add Rent</button></center>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

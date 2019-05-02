@@ -1,0 +1,95 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Agent List
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'admin_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i></li>
+                        <li class="active">Property</li>
+                    </ul>
+                    <h2>Property</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span11">
+
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div>
+
+                        {% if property_list %}
+                        <table class="table">
+                            <tr class="success">
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Rent</th>
+                                <th>Deposite</th>
+                                <th>Allocation Status</th>
+                                <th>Sold Out</th>
+                            </tr>
+
+                            {% for property in property_list %}
+                          
+                            <tr class="info">
+                                <td>{{ property.pr_address}} </td>
+
+                                <td>{% for mp in mp_list %}{% if property.pr_master_id == mp.id %} {{mp.msp_name}} {{ mp.msp_address }}{% endif %}{% endfor %}</td>
+                                <td>{{ property.pr_rent }}</td>
+                                <td>{{ property.pr_deposite }}</td>
+                                <td>{% if property.pr_is_allocated == True %} Allocated {% else %} Not Allocated {% endif %}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'property_soldout' property.id %}">
+                                        {% csrf_token %}
+                                        {% if property.pr_is_active == True %}
+                                        <input type="submit" name="submit" class="btn btn-theme" value="Sold Out">
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            
+                            </tr>
+                       
+                            {% endfor %}
+                            
+                        </table>
+                        <div class="pagination">
+                                <ul class="pagination">
+                                    {% if property_list.has_previous %}
+                                    <li class="active"><a href="?page={{ property_list.previous_page_number }}">Prev</a></li>
+                                    {% else %}
+                                    <li class="disabled"><a href="">Prev</a></li>
+                                    {% endif %}
+                                    {% for i in property_list.paginator.page_range %}
+                                    {% if property_list.number == i %}
+                                    <li class="active"><a href="">{{ i }} </a></li>
+                                    {% else %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if property_list.has_next %}
+                                    <li><a href="?page={{ property_list.next_page_number }}">Next</a></li>
+                                    {% else %}
+                                    <li class="disabled"><span>Next</span></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% else %}
+                        <strong>No Properties.</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

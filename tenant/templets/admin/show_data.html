@@ -1,0 +1,182 @@
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span10">
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div> 
+
+                        {% if act == 'all_clones'%}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>No of Properties</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td>{{ row.cln_alias}} </td>
+                                            <td>{% if row.cln_is_allocated %} Allocated {% else %} Not Allocated {% endif %} </td>
+                                            <td>{{row.properties}}</td>
+                                            <td> 
+                                            {% if not row.cln_is_master_clone %}
+                                            <button class="delete_clone btn btn-danger btn-rounded btn-small" 
+                                            data-cln="{{ row.id }}" data-msp="{{msp}}" >Delete</button>
+                                            {% else %}
+                                            Master Clone
+                                            {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                            <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% elif act == 'allocated_clones' %}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Name</th>
+                                        <th>Agent</th>
+                                        <th>Deallocate</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td>{{ row.al_master.cln_alias}} </td>
+                                            <td>{{ row.al_agent.first_name }} {{ row.al_agent.last_name }}</td>
+                                            <td><button class="deallocate_clone btn btn-danger btn-rounded btn-small" 
+                                            data-id="{{ row.id }}" data-cln="{{ row.al_master.id }}">Deallocate</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% elif act == 'unallocated_clones' %}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Name</th>
+                                        <th>Allocate</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td>{{ row.cln_alias}} </td>
+                                            <td><button id="allocate_clone" class="allocate_clone btn btn-success btn-rounded btn-small"
+                                             data-msp="{{msp}}" data-id="{{ row.id }}" >Allocate</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                            <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% elif act == 'all_properties' %}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Address</th>
+                                        <th>Master Property Clone</th>
+                                        <th>Status</th>
+                                        <th>Deposite</th>
+                                        <th>Rent</th>
+                                        <th>Description</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td class="pr_address">{{ row.pr_address}} </td>
+                                            <td class="pr_clone">{{ row.pr_master.cln_alias }}</td>
+                                            <td class="pr_status">{% if row.pr_is_allocated %} Allocated {% else %} Not Allocated {% endif %} </td>
+                                            <td class="pr_deposite">{{ row.pr_deposite}} </td>
+                                            <td class="pr_rent">{{ row.pr_rent}} </td>
+                                            <td class="pr_description">{{ row.pr_description}} </td>
+                                            <td><button class="edit_property btn btn-info btn-rounded btn-small" data-id="{{ row.id }}" >Edit</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% elif act == 'allocated_properties' %}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Address</th>
+                                        <th>Master Property Clone</th>
+                                        <th>Deposite</th>
+                                        <th>Rent</th>
+                                        <th>Tanat</th>
+                                        <th>Final Rent</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td>{{ row.pa_property.pr_address}} </td>
+                                            <td>{{ row.pa_property.pr_master.cln_alias }}</td>
+                                            <td>{{ row.pa_property.pr_deposite}} </td>
+                                            <td>{{ row.pa_property.pr_rent}} </td>
+                                            <td>{{ row.pa_tenant.tn_name}} </td>
+                                            <td>{{ row.pa_final_rent}} </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% elif act == 'unallocated_properties' %}
+                            {% if rows %}
+                                <table class="table fixed_header2" style="background-color: rgb(212, 238, 238)">
+                                    <thead>
+                                    <tr class="success">
+                                        <th>Address</th>
+                                        <th>Master Property Clone</th>
+                                        <th>Deposite</th>
+                                        <th>Rent</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for row in rows %}
+                                        <tr>
+                                            <td>{{ row.pr_address}} </td>
+                                            <td>{{ row.pr_master.cln_alias }}</td>
+                                            <td>{{ row.pr_deposite}} </td>
+                                            <td>{{ row.pr_rent}} </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                            <strong>No Data Present in the System</strong>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

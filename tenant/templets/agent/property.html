@@ -1,0 +1,132 @@
+{% if allocated_pr %}
+    <div class="tabbable tabs-left">
+        <ul class="nav nav-tabs bold">
+            <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+                {% for mpr in allocated_mpr %}
+                    <li class=""><a href="#{{mpr.id}}" data-toggle="tab"> {{mpr.msp_name}}</a></li>
+                {% endfor %}
+        </ul>
+
+        <div class="tab-content">
+            <!-- First Tab -->
+            <div class="tab-pane active" id="all">
+                <table class="table fixed_header">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th colspan="2">Address</th>
+                            <th>Rent</th>
+                            <th>Deposite</th>
+                            <th colspan="2">Description</th>
+                            <th colspan="2">Status</th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for property in allocated_pr %}
+
+                        <tr data-id='{{property.id}}'>
+                            <td>{{ property.pr_address}} </td>
+
+                            <td colspan="2"> {{property.pr_master.cln_master.msp_name}}, {{ property.pr_master.cln_master.msp_address }}</td>
+                            <td>{{ property.pr_rent }}</td>
+                            <td>{{ property.pr_deposite }}</td>
+                            <td colspan="2">{{ property.pr_description }}</td>
+
+                            <td colspan="2">{% if property.pr_is_allocated == True %}
+                            <div class="dropdown">
+                            
+                            <a class="dropdownlink" data-id="{{property.id}}"  >Options <i class='icon-angle-down'></i></a>
+                            <div class="dropdown-content">
+                            <a data-pid='{{property.id}}' data-toggle="tooltip" title="Deallocate Tenant to Property" class="deallocate_tenant"> Deallocate </a>
+                            <a data-pid='{{property.id}}'data-toggle="tooltip" title="View Allocation Details" class="allocation_details"> Details </a>
+                            <a href='/agent/add_rent/?pid={{property.id}}' piddata-toggle="tooltip" title="Add Rent">Rent</a>
+                                                                    
+                            {% if property.pr_tenant %}
+                                {% if property.pr_status == 3 %}
+                                    <a class="renew_agreement" data-id='{{ property.pr_tenant }}' data-toggle="tooltip" title="Register new agreement process for this property ">Renew Agreement</a>
+                                {% else %}
+                                    <a class="allocate_tenant" data-tid='{{ property.pr_tenant }}' data-toggle="tooltip" title="Update the agreement Details ">Update Agreement</a>
+                                {% endif %}
+                            {% endif %}
+                                                                    
+                            </div>
+                            </div>
+                            {% else %}
+                            <a class="allocate_tenant" data-toggle="tooltip" title="Allocate Tenant to Property" data-pid="{{property.id}}" >Allocate <i class='icon-angle-right'></i></a></i> 
+                            {% endif %}
+                            </td>
+                        
+
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>                       
+            </div>
+            <!-- First Tab Ends -->
+
+                {% for mpr in allocated_mpr %}
+                    <!-- All Other tab -->
+                    <div class="tab-pane" id="{{mpr.id}}">
+                        
+                        <table class="table fixed_header">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th colspan="2">Address</th>
+                                    <th>Rent</th>
+                                    <th>Deposite</th>
+                                    <th colspan="2">Description</th>
+                                    <th colspan="2">Status</th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for property in allocated_pr %}
+                            {% if property.pr_master.cln_master.id == mpr.id %}
+                                <tr data-id='{{property.id}}'>
+                                    <td>{{ property.pr_address}} </td>
+                                    <td colspan="2"> {{property.pr_master.cln_master.msp_name}}, {{ property.pr_master.cln_master.msp_address }}</td> 
+                                    <td>{{ property.pr_rent }}</td>
+                                    <td>{{ property.pr_deposite }}</td>
+                                    <td colspan="2">{{ property.pr_description }}</td>
+                                    <td colspan="2">{% if property.pr_is_allocated == True %}
+                                    <div class="dropdown">
+                                    <a class="dropdownlink" >Options <i class='icon-angle-down'></i></a>
+                                    <div class="dropdown-content">
+                                    <a data-pid='{{property.id}}' data-toggle="tooltip" title="Deallocate Tenant to Property" class="deallocate_tenant"> Deallocate </a>
+                                    <a data-pid='{{property.id}}'data-toggle="tooltip" title="View Allocation Details" class="allocation_details"> Details </a>
+                                    <a href='/agent/add_rent/?pid={{property.id}}' piddata-toggle="tooltip" title="Add Rent">Rent</a>
+                                                                    
+                                    {% if property.pr_tenant %}
+                                        {% if property.pr_status == 3 %}
+                                            <a class="renew_agreement" data-id='{{ property.pr_tenant }}' data-toggle="tooltip" title="Register new agreement process for this property ">Renew Agreement</a>
+                                        {% else %}
+                                            <a class="allocate_tenant" data-tid='{{ property.pr_tenant }}' data-toggle="tooltip" title="Update the agreement Details ">Update Agreement</a>
+                                        {% endif %}
+                                    {% endif %}
+                                                                    
+                                    </div>
+                                    </div>
+                                    {% else %}  <a class="allocate_tenant" data-toggle="tooltip" title="Allocate Tenant to Property" data-pid="{{property.id}}" >Allocate <i class='icon-angle-right'></i></a></i> {% endif %}</td>
+                                    
+                                </tr>
+                            
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    
+                    
+                
+                    </div>
+                    <!-- Other tbs ends -->
+                {% endfor %}
+        </div>
+
+<!-- end tab -->
+{% else %}
+
+    <strong> You have no property {% if propertytype == 'Allocatedproperty' %}allocated to Tenant.{% elif propertytype == 'Unallocatedproperty'%}Free.{% else %}. {% endif %}</strong>
+{% endif %} 

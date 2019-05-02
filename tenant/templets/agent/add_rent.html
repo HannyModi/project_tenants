@@ -1,0 +1,89 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Add Rent
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="inner-heading">
+          <ul class="breadcrumb">
+            <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i>
+            </li>
+            <li class="active">Rent</li>
+          </ul>
+          <h2>Add Rent Collection Detail</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="container">
+  <div class="container">
+    <div class="row">
+      <div class="span6">
+        <div style="background-image: url('images/bg-01.jpg');">
+          {% if propertyobj %}
+
+          <form enctype="multipart/form-data" class="contactForm" method="POST" action="{% url 'add_rent' %}">
+            {% comment %} action="{% url 'allocate_property' %}" > {% endcomment %}
+            {% csrf_token %}
+            <input type="hidden" name="allocationid" value="{{ propertyobj.id }}" />
+            <label> Property :</label>
+            <input type="text" id="pr_address"
+              value="{{ propertyobj.pa_property.pr_address }}, {{ propertyobj.pa_property.pr_master.cln_master.msp_name }}, {{ propertyobj.pa_property.pr_master.cln_master.msp_address }}"
+              disabled /></br>
+            <label>
+              Tenant Name :</label>
+            <input type="text" id="tn_name" disabled name="tenantname"
+              value="{{ propertyobj.pa_tenant.tn_name }}" /><br />
+            <label>
+              Property Rent :</label>
+            <input type="text" disabled name="property_rent" value="{{ propertyobj.pa_final_rent }}" /><br />
+            <label>
+              <input type="hidden" name="payofmonth" value="{{ last_paid }}" />
+              {% if unpaidflag == True %}
+              Rent Of Month :</label>
+            <input type="text" disabled name="rentmonth" id="rentmonth" value="{{last_paid}}" /><br />
+            <label>
+              Receipt Number :</label>
+            <input type="number" class="decimal_input" style="width:100%" name="reciptno" required id="receiptno" /><br />
+            Upload Receipt :</label>
+            <input type="file" accept="image/gif, image/jpeg, image/png" id="receiptpic" name="reciptpic" required/><br /><br />
+            <center><button type="submit" class="btn btn-rounded btn-theme" value="submit">Add Rent</center>
+          </form>
+          {% elif unpaidflag == False %}
+          <strong>All rent of this allocation is paid. <strong>
+              {% else %}
+              <strong>Agreement Under Process. <strong>
+                  {% endif %}
+                  {% endif %}
+        </div>
+      </div>
+      <div class="span2"></div>
+      <div class="span4">
+        <table class="table fixed_header">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for month in months %}
+            <tr>
+              {% for m in month %}
+              <td>{{m}}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

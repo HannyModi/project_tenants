@@ -1,0 +1,56 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Add Master Property
+{% endblock %}
+{% block bodyblock %}
+
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">Add Master Property</li>
+                    </ul>
+                    <h2>Add Master Property</h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span8">
+                <strong style="color: red;">{{ context }}</strong>
+
+                <form enctype="multipart/form-data" role="form" class="contactForm" action="" method="POST"
+                    id="AddMPForm">
+                    {% csrf_token %}
+                    Name:<input type="text" name="msp_name" required="True" /> <br />
+                    Address: <textarea name="msp_address" required="True"></textarea><br />
+                    Description:<textarea name="msp_description" required="True"></textarea><br />
+                    Create Clone: <input type="checkbox" id="create_clone" name="msp_have_clones" class="checkbox"></br>
+                    <div id="clone_div" class="hidden">
+                        No of Clones:<input type="number" id="clone_no" name="msp_clone_no" /> <br />
+
+                        <div id="clone_list">
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit" value="Submit" class="btn btn-success btn-medium">Add Property</button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

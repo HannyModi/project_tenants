@@ -1,0 +1,10 @@
+{% if clones %}
+    <br/>Select Clone :
+    <select name="pr_msp_clone" class="form-data" style="width:75%;" id="cln_list" placeholder="new hint">
+        {% for clone in clones %}
+            <option  value={{clone.id}}> {{clone.cln_alias}} </option>
+        {% endfor %}
+    </select><br />
+{% else %}
+    <strong>No clone Present For selected Property</strong>
+{% endif %}

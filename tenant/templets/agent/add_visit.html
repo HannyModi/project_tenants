@@ -1,0 +1,90 @@
+{% extends 'agent/Base.html'%}
+{% load staticfiles%}
+{% block titleblock %}Add Visit{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">Add Visit</li>
+                    </ul>
+                    <h2>Add Visit</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span10">
+                <form action="{% url 'add_visit' %}" method="POST" class='contactForm'>
+                    {% csrf_token %}
+                    {% if tenant %}
+                    <input type="hidden" value="{{ tenant.id }}" name="selectedtn" />
+                    <label>Name : 
+                    {{tenant.tn_name}}</label><br/>
+                    {% elif tlist %}
+                    <label>Tenant : </label>
+                    <select name='selectedtn' style='width:75%' required>
+                        <option value="">Select Tenant</option>
+                        {% for t in tlist %}
+                        <option value="{{ t.id }}">{{ t.tn_name }}</option>
+                        {% endfor %}
+                    </select><br/><br/>
+                    {% else %}
+                    You hav no active Tenants<br/><br/>
+                    {% endif %}
+                    {% if plist %}
+                    <label>Property : </label>
+                    <select name='selectedpr' style='width:75%' required>
+                        <option value="">Select Property</option>
+                        {% for p in plist %}
+                        <option value="{{p.pk}}">{{ p.pr_address }} {{ p.pr_master.cln_master.msp_name }} {{ p.pr_master.cln_master.msp_address }}</option>
+                        {% endfor %}
+                    </select><br/><br/>
+                    {% else %}
+                    You have empty property.
+                    {% endif %}
+                    <label>Visit Date : </label>
+                    <input type="date" id="visitdate" style="width:75%;" name="visitdate"/>
+                    <script>
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth()+1; //January is 0!
+                        var yyyy = today.getFullYear();
+                        if(dd<10){
+                                dd='0'+dd
+                            } 
+                            if(mm<10){
+                                mm='0'+mm
+                            } 
+                        maxdate = yyyy+'-'+mm+'-'+dd;
+                        document.getElementById("visitdate").setAttribute("max", maxdate);
+                    </script><br><br>
+                    <label>Tenant Intrest : </label>
+                    <select name='selectedin' style='width:75%' required>
+                        <option value="">Select Status</option>
+                        <option value="1">Interested</option>
+                        <option value="2">Not Interested</option>
+                        <option value="3">Potential Tenant(More Intrested)</option>
+                    </select><br/><br/>
+                    {% if tenant and plist or tlist and plist%}
+                    <button type="submit" class="btn btn-theme btn-rounded " >Add Visit</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-theme btn-rounded " disabled >Add Visit</button>
+                    {% endif %}
+                    {% if not tenant%}
+                        <a data-toggle="tooltip" title="Add new tenant to system." href="{% url 'addTenant' %}">New tenant?</a>
+                    {% endif %}
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

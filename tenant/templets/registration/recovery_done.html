@@ -1,0 +1,31 @@
+{% extends "registration/base.html" %}{% load i18n %}
+
+{% block titleblock %}{% trans "New password set" %}{% endblock %}
+
+{% block bodyblock %}
+<section id="inner-headline">
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<div class="inner-heading">
+					<ul class="breadcrumb">
+						<li><a href="{% url 'index' %}">Home</a> <i class="icon-angle-right"></i></li>
+						<li class="active">Forgot Password</li>
+					</ul>
+					<h2>Email Sent</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section id="container">
+	<div class="container">
+		<div class="row">
+			<div class="span8">
+				<p>{% trans "Your password has successfully been reset. You can use it right now on the login page." %}
+				</p>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

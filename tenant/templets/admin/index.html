@@ -1,0 +1,335 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+{% comment %} {% load chartit %}
+{ { chart3 | load_charts: "container3" } } {% endcomment %}
+Admin / Home
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a>
+                    </ul>
+                        <h2>Home</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <a href="{% url 'admin_agent_active'%}">
+                    <span class='span3'>
+                        <span class="card bg-secondary text-white">
+                            <span class="card-header" style="font-size: 0.6cm">
+                                <center>Total Active Agents</center>
+                            </span>
+                            <span class="card-body" style="font-size: 0.4cm">
+                                <center>{{ allinfo.total_active_agents }}</center>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+
+                <span class='span3'>
+                    <span class="card bg-secondary text-white">
+                        <span class="card-header" style="font-size: 0.6cm">
+                            <center>Free Agents</center>
+                        </span>
+                        <span class="card-body" style="font-size: 0.4cm">
+                            <center>{{ allinfo.free_agents }}</center>
+                        </span>
+                    </span>
+                </span>
+
+                <a href="{% url 'admin_agent_requests'%}">
+                    <span class='span3'>
+                        <span class="card bg-secondary text-white">
+                            <span class="card-header" style="font-size: 0.6cm">
+                                <center>Agent Requests</center>
+                            </span>
+                            <span class="card-body" style="font-size: 0.4cm">
+                                <center>{{ allinfo.agent_requests }}</center>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+                <span class='span3'>
+                    <span class="card bg-secondary text-white">
+                        <span class="card-header" style="font-size: 0.6cm">
+                            <center>Yesterday's Visits</center>
+                        </span>
+                        <span class="card-body" style="font-size: 0.4cm">
+                            <center>{{ allinfo.yesterdays_visit }}</center>
+                        </span>
+                    </span>
+                </span>
+            </div>
+            <div class="row">
+                <a href="{% url 'admin_view_master_property' %}">
+                    <span class='span3'>
+                        <span class="card bg-secondary text-white">
+                            <span class="card-header" style="font-size: 0.6cm">
+                                <center>Total Properties</center>
+                            </span>
+                            <span class="card-body" style="font-size: 0.4cm">
+                                <center>{{ allinfo.totalproperties }}</center>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+                <span class='span3'>
+                    <span class="card bg-secondary text-white">
+                        <span class="card-header" style="font-size: 0.6cm">
+                            <center>Free Properties</center>
+                        </span>
+                        <span class="card-body" style="font-size: 0.4cm">
+                            <center>
+                              
+                            {{ allinfo.free_property }}
+                            </center>
+                        </span>
+                    </span>
+                </span>
+                <span class='span3'>
+                    <span class="card bg-secondary text-white">
+                        <span class="card-header" style="font-size: 0.6cm">
+                            <center>Total Tenants</center>
+                        </span>
+                        <span class="card-body" style="font-size: 0.4cm">
+                            <center>{{ allinfo.total_tenants }}</center>
+                        </span>
+                    </span>
+                </span>
+                <a href="{% url 'admin_unmanaged_tenants' %}">
+                    <span class='span3'>
+                        <span class="card bg-secondary text-white">
+                            <span class="card-header" style="font-size: 0.6cm">
+                                <center>Unmanaged Tenants</center>
+                            </span>
+                            <span class="card-body" style="font-size: 0.4cm">
+                                <center>{{ allinfo.unmanaged_tenantlist }}</center>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+            </div>
+            <hr>
+        <h1>Reports</h1>
+            <div class="row">
+                <div class="span12">
+                    
+                    <div id="containermsp"></div>
+                    <script src="{% static "js/custom/highcharts.js" %}"></script>
+                        <script>
+                            Highcharts.chart('containermsp', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                    title: {
+                                        text: 'Property Details'
+                                    },
+                                    xAxis: {
+                                        categories: [
+                                                        {% for entry in msp_list %}'{{ entry.msp_name }}, <br /> {{ entry.msp_address }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                                                    ]
+                                        },
+                                    series: [{
+                                        name: 'Allocated Properties',
+                                        data: [
+                                                {% for entry in msp_list %}{{ entry.allocated_properties }}{% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'green'
+                                                }, {
+                                        name: 'Unallocated Properties',
+                                        data: [
+                                                            {% for entry in msp_list %} {{ entry.unallocated_properties }} {% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'orange'
+                                                }]
+                                    });
+                        </script>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span12">
+                    
+                    <div id="containervisit"></div>
+                    <script src="{% static "js/custom/highcharts.js" %}"></script>
+                        <script>
+                            Highcharts.chart('containervisit', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                    title: {
+                                        text: 'Last 30 days visit Status'
+                                    },
+                                    xAxis: {
+                                        categories: [
+                                                        {% for entry in agentwise_tenant_intrest %}'{{ entry.first_name }} {{ entry.lastname }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                                                    ]
+                                        },
+                                    series: [{
+                                        name: 'All Visits',
+                                        data: [
+                                                {% for entry in agentwise_tenant_intrest %}{{ entry.allvisits }}{% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'green'
+                                                }, {
+                                        name: 'Tenets are potentialy Intrested',
+                                        data: [
+                                                            {% for entry in agentwise_tenant_intrest %} {{ entry.status3 }} {% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'blue'
+                                                },
+                                                {
+                                        name: 'Tenets are Intrested',
+                                        data: [
+                                                            {% for entry in agentwise_tenant_intrest %} {{ entry.status1 }} {% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'maroon'
+                                                },
+                                                {
+                                        name: 'Tenets are not Intrested',
+                                        data: [
+                                                            {% for entry in agentwise_tenant_intrest %} {{ entry.status2 }} {% if not forloop.last %}, {% endif %} {% endfor %}
+                                                ],
+                                        color: 'gray'
+                                                }]
+                                    });
+                        </script>
+                </div>
+            </div>
+          
+            <div class="row">
+                <div id="monthlyrent"></div>
+                    <script>
+                        Highcharts.chart('monthlyrent', {
+                            title: {
+                                text: 'Propertywise Rent Collection'
+                            },
+                             xAxis: {
+                                title: {
+                                    text: 'Mohths'
+                                    },
+                               
+                                categories: [{% for data in months %}'{{ data }}',{% endfor %}],
+
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Rupees Collected'
+                                    }
+                                },  
+                            
+                            legend: {
+                                layout: 'vertical',
+                                align: 'right',
+                                verticalAlign: 'middle'
+                                },
+                            tooltip: {
+                                headerFormat: '<b>{series.name}</b><br/>',
+                                pointFormat: 'Rupees Collected:{point.y}/-'
+                            },
+                            series: [
+                                        {% for rentdata in rent %}
+                                        {
+                                            name: '{{ rentdata.msp_name }}',
+                                            
+                                            data: [{{rentdata.month1}},{{rentdata.month2}},{{rentdata.month3}},{{rentdata.month4}},{{rentdata.month5}},{{rentdata.month6}},{{rentdata.month7}},{{rentdata.month8}},{{rentdata.month9}},{{rentdata.month10}},{{rentdata.month11}},{{rentdata.month12}}]
+                                            
+                                        },
+                                        {% endfor %}
+                                ],
+                                responsive: {
+                                        rules: [{
+                                            condition: {
+                                                maxWidth: 500
+                                            },
+                                            chartOptions: {
+                                                legend: {
+                                                    layout: 'horizontal',
+                                                    align: 'center',
+                                                    verticalAlign: 'bottom'
+                                                }
+                                            }
+                                        }]
+                                    }
+                                });
+                    </script>
+            </div> 
+            <div class="row">
+                <div id="agent_wise_rent"></div>
+                <script>
+                        Highcharts.chart('agent_wise_rent', {
+                            title: {
+                                text: 'Agentwise Rent Collection'
+                            },
+                             xAxis: {
+                                title: {
+                                    text: 'Mohths'
+                                    },
+                               
+                                categories: [{% for data in months %}'{{ data }}',{% endfor %}],
+
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Rupees Collected'
+                                    }
+                                },  
+                            
+                            legend: {
+                                layout: 'vertical',
+                                align: 'right',
+                                verticalAlign: 'middle'
+                                },
+                                tooltip: {
+                                    headerFormat: '<b>{series.name}</b><br/>',
+                                    pointFormat: 'Rupees Collected:{point.y}/-'
+                                },
+                            series: [
+                                        {% for rentdata in agent_wise_rent %}
+                                        {
+                                            name: '{{ rentdata.first_name }}',
+                                            
+                                            data: [{{rentdata.month1}},{{rentdata.month2}},{{rentdata.month3}},{{rentdata.month4}},{{rentdata.month5}},{{rentdata.month6}},{{rentdata.month7}},{{rentdata.month8}},{{rentdata.month9}},{{rentdata.month10}},{{rentdata.month11}},{{rentdata.month12}}]
+                                            
+                                        },
+                                        {% endfor %}
+                                ],
+                                responsive: {
+                                        rules: [{
+                                            condition: {
+                                                maxWidth: 500
+                                            },
+                                            chartOptions: {
+                                                legend: {
+                                                    layout: 'horizontal',
+                                                    align: 'center',
+                                                    verticalAlign: 'bottom'
+                                                }
+                                            }
+                                        }]
+                                    }
+                                });
+                </script>
+            </div> 
+
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+{% endblock %}

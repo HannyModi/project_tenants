@@ -1,0 +1,63 @@
+
+{% extends 'admin/Base.html'%}
+{% load staticfiles%}
+{% block titleblock %}Create Clones
+{% endblock %}
+{% block bodyblock %}
+
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'admin_index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">Create Clone</li>
+                    </ul>
+                    <h2>Create New Clones</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span10">
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div>
+<form method="POST" action="{% url 'admin_create_clone' %}" class='contact-form' >
+                        {% csrf_token %}
+                        Master Property:
+
+                        <select style="width: 75%" style="width: 75%" name="pr_msp" required class="form-data" id="msp_create_clone" placeholder="new hint" required>
+                            <option value="" selected="selected">Select Master Property</option>
+                            {% for item in obj_msp %}
+                            <option value={{item.id}}> {{item.msp_name}} {{item.msp_address}}</option>
+                            {% endfor %}
+                        </select><br /></br>
+
+                        {% comment %} Create Clone: <input type="checkbox" id="create_clone" name="msp_have_clones"
+                            class="checkbox"></br></br> {% endcomment %}
+                        <div id="property" class="hidden">
+                            No of Clones:<input type="number" id="clone_no" name="msp_clone_no" /> <br />
+<br>
+                            <div id="clone_list">
+
+                            </div>
+                        </div>
+                        <button class='btn btn-success btn-rounded'>Add Clone</button>
+
+                        </form>
+                       
+           
+                
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

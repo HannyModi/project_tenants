@@ -1,0 +1,158 @@
+<div class="row">
+    <div class="span4" style="align-content: center">
+
+        <h2>Personal Information</h2>
+        {% if tenant %}
+          
+        <table>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Profile:</b></td>
+                <td style="padding:10px; height: 80%; width: 50%;"> <img src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                        alt="no imtne of {{ tenant.tn_name }}"></td>
+            </tr>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Name:</b></td>
+                <td style="padding:10px;">{{ tenant.tn_name }}</td>
+            </tr>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Contact:</b></td>
+                <td style="padding:10px;">{{ tenant.tn_contact }}</td>
+            </tr>
+            <!-- <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Local Address:</b></td>
+                <td style="padding:10px;">{{ tenant.tn_permanent_address }}</td>
+            </tr> -->
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Joinning Date:</b></td>
+                <td style="padding:10px;">{{ tenant.tn_joining_date }}</td>
+            </tr>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>property:</b></td>
+                <td style="padding:10px;">
+                {% if allocation %}
+                    {{allocation.pa_property.pr_address}},
+                    {{allocation.pa_property.pr_master.cln_master.msp_name}},</br>
+                    {{allocation.pa_property.pr_master.cln_master.msp_address}}
+                {% else %}
+                    No property allocated.
+                {% endif %}
+                </td>
+            </tr>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Agent:</b></td>
+                <td style="padding:10px;">{{tenant.tn_agent.first_name}} {{tenant.tn_agent.last_name}}</td>
+            </tr>
+            <tr style="padding:5px;">
+                <td style="padding:10px;"><b>Agent Contact:</b></td>
+                <td style="padding:10px;">{{tenant.tn_agent.ag_contact}}</td>
+            </tr>
+            <!-- <tr>
+                <td>
+                    <b>property</b>
+                </td>
+                <td>
+                    {{allocation.pa_property.pr_address}},
+                    {{allocation.pa_property.pr_master.cln_master.msp_name}},</br>
+                    {{allocation.pa_property.pr_master.cln_master.msp_address}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Agent</b>
+                </td>
+                <td>
+                    {{tenant.tn_agent.first_name}} {{tenant.tn_agent.last_name}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Agent Contact &nbsp;</b>
+                </td>
+                <td>
+                    {{tenant.tn_agent.ag_contact}}
+                </td>
+            </tr> -->
+        </table>
+        {% else %}
+            Profile not found.<br> Please Contact to Agent.
+        {% endif %}
+    </div>
+    <div class="span5">
+
+        <h2>Rent Information</h2>
+        {% if rent_data %}
+        <table class="table fixed_header">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Status</th>
+                    <th>Pay off date</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+                {% for rent in rent_data %}
+                <tr>
+                    <td>{{rent.month}}</td>
+                    <td>{{rent.status}}</td>
+                    <td>{{rent.date}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            No Rent Detail found.
+            {% endif %}
+    </div>
+</div>
+<!-- 
+<table>
+    <tr>
+        <td>
+            property
+        </td>
+        <td>
+            {{allocation.pa_property.pr_address}},
+            {{allocation.pa_property.pr_master.cln_master.msp_name}},</br>
+            {{allocation.pa_property.pr_master.cln_master.msp_address}}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Agent
+        </td>
+        <td>
+            {{tenant.tn_agent.first_name}} {{tenant.tn_agent.last_name}}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Agent Contact &nbsp;
+        </td>
+        <td>
+            {{tenant.tn_agent.ag_contact}}
+        </td>
+    </tr>
+</table>
+
+<table class="table fixed_header">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Status</th>
+            <th>Pay off date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% comment %}
+        {% make_list allocation.pa_agreement_date|date:'m' allocation.pa_agreement_end_date|date:'m' as months %}
+        {% endcomment %}
+        {% for rent in rent_data %}
+        <tr>
+            <td>{{rent.month}}</td>
+            <td>{{rent.status}}</td>
+            <td>{{rent.date}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table> -->

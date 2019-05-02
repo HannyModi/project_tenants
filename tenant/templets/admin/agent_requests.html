@@ -1,0 +1,89 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+    Agent List
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="inner-heading">
+                        <ul class="breadcrumb">
+                            <li><a href="{% url 'admin_index' %}">Home</a> <i class="icon-angle-right"></i></li>
+                            <li class="active">Agent Requests</li>
+                        </ul>
+                        <h2>Agent Requests</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="imgDiv" class="modal2">
+        <span class="close">&times;</span>
+        <img class="modal2-content" id="img01">
+        <div id="caption"></div>
+    </div>
+
+    <section id="container">
+            <div class="container">
+                <div class="row">
+                    <div class="span11">
+        
+                        <div style="background-image: url('images/bg-01.jpg');" >
+                            {% if agents %}
+                            <input placeholder="Enter agent name to search" class="span11" id="search" type="text">
+                            {% endif %}
+                            <div id="tbl_agents">
+                               
+                                    
+                                {% if agents %}
+                                    
+                                
+                                    <table class="table fixed_header" >
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Contact</th>
+                                                <th colspan="2">Email</th>
+                                                <th colspan="3">Address</th>
+                                                <th>Date of Request</th>
+                                                <th>Profile</th>
+                                                <th>Accept</th>
+                                                <th>Reject</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for agent in agents %}
+                                                <tr>
+                                                    <td><a href="{% url 'admin_agent_profile' agent.id %}">{{ agent.first_name }} {{ agent.last_name }}</a></td> 
+                                                    <td>{{ agent.ag_contact }}</td>
+                                                    <td colspan="2">{{ agent.email }}</td>
+                                                    <td colspan="3">{{ agent.ag_local_address }}</td>
+                                                    <td>{{ agent.date_joined }}</td>
+                                                    <td> <img height="100px" width="100px" class="pimg" src="{{ MEDIA_URL }}{{ agent.ag_profile_image }}" alt="Iamge of {{ agent.username }}"></td>
+                                                    <td>
+                                                        <button data-id="{{ agent.id }}" class="btn-success btn-rounded accept_agent_request">Accept</button>
+                                                    </td>
+                                                    <td>
+                                                        <button data-id="{{ agent.id }}" class="btn-danger btn-rounded reject_agent_request">Reject</button>
+                                                    </td>
+                                                   
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                 </div>
+                                {% else %}
+                                    <strong>No new Requests.</strong>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+{% endblock %}

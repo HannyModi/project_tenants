@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<html>
+    <body onload="notify('{{msg}}','{{code}}','{{url}}')">
+    </body>
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/custom/tenant-ajax.js" %}"></script>
+    <script>
+        function notify(msg,code,url) {
+            console.log(msg)
+            status = msg;
+            localStorage.setItem("Status", status);
+            location.href = url;
+        }  
+    </script>
+</html>

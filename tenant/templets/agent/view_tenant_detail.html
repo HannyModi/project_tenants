@@ -1,0 +1,188 @@
+{% extends 'agent/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+tenant Profile
+{% endblock %}
+
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'agent_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i></li>
+                        <li class="active">Tenant details</li>
+                    </ul>
+                    <h2>Tenant details</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% comment %} <section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span8">
+                <div style="background-imtne: url('imtnes/bg-01.jpg');">
+                    <div class="box flyIn animated fadeInUp">
+                        <center>
+                            {% if tenant %}
+                            <table style="border-spacing:125px;">
+                                <tr style="padding:20px;">
+                                    <td style="padding:20px;"><b>Image:</b></td>
+                                    <td style="padding:20px;"> <img src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                            alt="no imtne of {{ tenant.tn_name }}"></td>
+                                </tr>
+                                <tr style="padding:20px;">
+                                    <td style="padding:20px;"><b>Name:</b></td>
+                                    <td style="padding:20px;">{{ tenant.tn_name }}</td>
+                                    
+                                </tr>
+                                <tr style="padding:20px;">
+                                    <td style="padding:20px;"><b>Contact:</b></td>
+                                    <td style="padding:20px;">{{ tenant.tn_contact }}</td>
+                                </tr>
+                                
+                                <tr style="padding:20px;">
+                                    <td style="padding:20px;"><b>Local Address:</b></td>
+                                    <td style="padding:20px;">{{ tenant.tn_permanent_address }}</td>
+                                </tr>
+                                <tr style="padding:20px;">
+                                    <td style="padding:20px;"><b>Joinning Date:</b></td>
+                                    <td style="padding:20px;">{{ tenant.tn_joining_date }}</td>
+                                </tr>
+                                <tr style="padding:20px;">
+                                   <td></td>
+                                    <td style="padding:20px;">
+                                        <form method="POST" action="{% url 'change_tenant_status' %}">
+                             
+                                            {% csrf_token %}
+                                            <input type="hidden" name="tid" value="{{ tenant.id }}">
+                                            <input type="submit" name="submit" class="btn btn-danger" {% if tenant.tn_is_active == True %} value="Deactivate" {% else %} value="Activate" {% endif %}>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            </table>
+                            {% else %}
+                            <strong>Profile not found .</strong>
+                            {% endif %}
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> {% endcomment %}
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span5">
+                <div style="background-imtne: url('imtnes/bg-01.jpg');">
+                    <div class="box flyIn animated fadeInUp">
+                         {% if tenant %}
+                            <h5>Personal Information</h5>
+                            <table style="border-spacing:125px;">
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Image:</b></td>
+                                    <td style="padding:10px;"> <img src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                                            alt="no image of {{ tenant.tn_name }}"></td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Name:</b></td>
+                                    <td style="padding:10px;">{{tenant.id}} {{ tenant.tn_name }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Contact:</b></td>
+                                    <td style="padding:10px;">{{ tenant.tn_contact }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Local Address:</b></td>
+                                    <td style="padding:10px;">{{ tenant.tn_permanent_address }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Joinning Date:</b></td>
+                                    <td style="padding:10px;">{{ tenant.tn_joining_date }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Reference Name:</b></td>
+                                    <td style="padding:10px;">{{ tenant.tn_reference_name }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Reference Address:</b></td>
+                                    <td style="padding:10px;">{{ tenant.tn_reference_address }}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                    <td style="padding:10px;"><b>Status:</b></td>
+                                    <td style="padding:10px;">{% if tenant.tn_status == 0 %}Property Not Allocated{% elif tenant.tn_status == 1 %}Visit to property{% elif tenant.tn_status == 2 %}deal Accepted aggrement under process
+                                            {% elif tenant.tn_status == 3 %}Property Handovered{% endif %}</td>
+                                </tr>
+                                <tr style="padding:5px;">
+                                   <td></td>
+                                    <td style="padding:10px;">
+                                       {% if tenant.tn_is_active == True %}
+                                            <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small deactivate" id="deactivate" >Remove</button>
+                                        {% else %}
+                                            <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small activate" id="activate" >Make Active</button>
+                                            {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        {% else %}
+                          <strong>Profile not found .</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="span1"></div>            
+            <div class="span7">
+                {% if history %}
+                    <h5>History</h5>
+                        <table class="table fixed_header">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Property</th>
+                                    <th colspan="2">Agreement Date</th>
+                                    <th colspan="2">Agreement End Date</th>
+                                    <th>Rent</th>
+                                    <th colspan="2">Operations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for h in history %}
+                                <tr>
+                                    <td colspan="2">{{ h.pa_property.pr_address}}, {{h.pa_property.pr_master.cln_master.msp_name}},{{h.pa_property.pr_master.cln_master.msp_address}}</td>
+                                    <td colspan="2">{% if h.pa_agreement_date != None %}{{h.pa_agreement_date}}{% else %}Agreement underprocess{% endif %}</td>
+                                    <td colspan="2">{% if h.pa_agreement_end_date != None %}{{h.pa_agreement_end_date}}{% else %}Agreement underprocess{% endif %}</td>
+                                    <td>{{h.pa_final_rent}}</td>
+                                    <td colspan="2">{% if h.pa_is_allocated == True %}
+                                            <div class="dropdown">
+                                                    <a class="dropdownlink" data-id="{{h.pa_property.pk}}">{% if tenant.tn_status == 2 %}Agreement Underprocess{% else %}Currently Living {% endif %}<i class='icon-angle-down'></i></a>
+                                                    <div class="dropdown-content">
+                                                    <a data-pid='{{h.pa_property.pk}}' data-toggle="tooltip" title="Deallocate Property" class="deallocate_tenant"> Deallocate </a>
+                                                    {% if tenant.tn_status == 3 %}
+                                                    <a class="renew_agreement" data-id='{{ tenant.pk }}' data-toggle="tooltip" title="Register new agreement process for this property ">Renew Agreement</a>
+                                                    {% comment %} <!-- <a data-tid='{{tenant.pk}}'data-toggle="tooltip" title="Renew Agreement" class="renew_agreement"> Renew Agreement </a>                                     --> {% endcomment %}
+                                                    {% endif %}          
+                                        {% comment %} {% elif tenant.tn_status == 2 and h.pa_is_allocated == False %}
+                                            Living here {% endcomment %}
+                                        {% else %}
+                                            Lived here in history
+                                        {% endif%} 
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                {% endif %}
+                {% if count == 1 %}
+                    {% if tenant.tn_is_active == True %}
+                        <center> <button class="btn btn-theme btn-rounded btn-small allocate_tenant" data-tid="{{ tenant.id }}" >Allocate</button><center>
+                    {% endif%}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

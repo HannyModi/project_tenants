@@ -1,0 +1,128 @@
+
+{% if visits %}
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs bold">
+        <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+
+        {% for month in months %}
+        {% comment %} {% if mpr.id in allocated_pr.pr_master.cln_master.id %} {% endcomment %}
+        <li class=""><a href="#{{month.datefield|date:'FY'}}" data-toggle="tab">
+                {{month.datefield|date:'F, Y'}}</a></li>
+        {% comment %} {% endif %} {% endcomment %}
+        {% endfor %}
+
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="all">
+            <div>
+                <div id="tbl_tenants" class="item ">
+
+
+                    <table class="table fixed_header">
+                        <thead>
+                            <tr class="success">
+                                <th>Tenant</th>
+                                <th colspan="2">Address</th>
+                                <th>Date</th>
+                                <th>Interest</th>
+                                <th>Property Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for visit in visits %}
+
+                            <tr>
+                                <td><a data-toggle="tooltip" title="View Details"
+                                        class='data-tn_name'
+                                        href="{% url 'TenantDetails' visit.vs_tenant.id %}">{{ visit.vs_tenant.tn_name }}</a>
+                                </td>
+
+                                <td colspan="2">{{ visit.vs_address }}</td>
+                                <td>{{ visit.vs_date}}</td>
+                                <td>
+                                    {% if visit.vs_intrest_status == 1  %}
+                                    Interested
+                                    {% elif visit.vs_intrest_status == 2 %}
+                                    Not Interested
+                                    {% else %}
+                                    Potential Visit
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if visit.vs_property.pr_is_allocated %}
+                                    Not Available
+                                    {% else %}
+                                    Available
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- First Tab Ends -->
+            </div>
+        </div>
+        {% for month in months %}
+        <!-- All Other tab -->
+        <div class="tab-pane" id="{{month.datefield|date:'FY'}}">
+
+            <table class="table fixed_header">
+                <thead>
+                    <tr class="success">
+                        <th>Tenant</th>
+                        <th colspan="2">Address</th>
+                        <th>Date</th>
+                        <th>Interest</th>
+                        <th>Property Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in visits %}
+                    {% if visit.vs_date|date:'FY' == month.datefield|date:'FY' %}
+                    <tr>
+                        <td><a data-toggle="tooltip" title="View Details" class='data-tn_name'
+                                href="{% url 'TenantDetails' visit.vs_tenant.id %}">{{ visit.vs_tenant.tn_name }}</a>
+                        </td>
+
+                        <td colspan="2">{{ visit.vs_address }}</td>
+                        <td>{{ visit.vs_date}}</td>
+                        <td>
+                            {% if visit.vs_intrest_status == 1  %}
+                            Interested
+                            {% elif visit.vs_intrest_status == 2 %}
+                            Not Interested
+                            {% else %}
+                            Potential Visit
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if visit.vs_property.pr_is_allocated %}
+                            Not Available
+                            {% else %}
+                            Available
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+        <!-- Other tbs ends -->
+        {% endfor %}
+
+
+        <!-- end tab -->
+            </div>
+        </div>
+
+    </div>  
+</div>
+{% else %}
+    </br>
+    <strong> No visits Found in selected criteria. </strong>
+
+{% endif %}

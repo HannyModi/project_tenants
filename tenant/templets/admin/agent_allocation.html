@@ -1,0 +1,68 @@
+{% extends 'admin/Base.html'%}
+{% load staticfiles%}
+{% block titleblock %}Allocate Master Property
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'admin_index' %}"><i class="icon-home"></i> Home</a> <i class="icon-angle-right"></i></li>
+                        <li class="active">Allocate Master Property</li>
+                    </ul>
+                    <h2>Allocate Master Property</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span11">
+
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div>
+                        <form method="POST" onsubmit="return confirm('Property will be alloacted to selected agent');" action="{% url 'admin_allocate_clone' %}">
+                           {% csrf_token %}                           
+                            Master Property:
+                            {% if msp %}
+                            <strong>{{msp.msp_name}}</strong><input type="hidden" name="hidden" value="{{msp.id}}" >
+                            </br>
+                            Clone : <strong>{{cln.cln_alias}}</strong><input type="hidden" name="pr_msp_clone" value="{{cln.id}}" ></br>
+                            {% else %}
+                            <select name="pr_msp" required style='width:75%' class="form-data" id="msp_list" data-unallocated='1' placeholder="new hint" required>
+                                <option value="">Select Master Property</option>
+                                {% for item in obj_msp %}
+                                <option  value={{item.id}}> {{item.msp_name}} {{item.msp_address}}</option>
+                                {% endfor %}
+                            </select><br />
+                            
+                            <div id="property" class="hidden">
+                               
+                            </div>
+                            {% endif %}
+                            {% if agent %}
+                                Agent : <strong>{{agent.first_name}} {{agent.last_name}}</strong><input type="hidden" name="agentx" value="{{agent.id}}" ></br>
+                            {% else %}
+                            <br/>
+                                Agent:
+                                <select name="agentx" id="selectedagent" style='width:75%' required >
+                                    <option selected="selected" value="" >Select Agent</option>
+                                    {% for item in obj_agent %}
+                                    <option  value={{item.id}}>{{item.first_name}} {{item.last_name}}</option>
+                                    {% endfor %}
+                                </select><br /><br/>
+                            {% endif %}
+                           
+                            <input type="submit" id="btnsuccess" class='btn btn-success btn-rounded' value="Allocate this Property"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

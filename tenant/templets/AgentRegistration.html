@@ -1,0 +1,123 @@
+{% extends 'Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+Register
+{% endblock %}
+
+{% block link %}
+<link href="{% static "css/bootstrap.css" %}" rel="stylesheet" type="text/css" />
+<link href="{% static "css/datepickercss.css" %}" rel="stylesheet" />
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div class="inner-heading">
+          <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a> <i class="icon-angle-right"></i></li>
+            <li class="active">Agent Registration</li>
+          </ul>
+          <h2>Agent Registration</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="container">
+  <div class="container">
+    <div class="row">
+      <div class="span8">
+        <form action="" method="post" enctype="multipart/form-data" role="form" class="contactForm">
+          {% for e in form.errors %}
+          {{e}}
+          {% endfor %}
+          {% csrf_token %}
+          {{form.first_name.help_text}}
+          {{form.first_name}}
+          <br /><br />
+
+          {{form.last_name.help_text}}
+          {{form.last_name}}
+          <br /><br />
+
+          {{form.username.help_text}}
+          {{form.username}}
+          <br /><br />
+
+          {{form.email.help_text}}
+          {{form.email}}
+          <br /><br />
+
+          {{form.password.help_text}}
+          {{form.password}}
+          <br /><br />
+
+          {{form.password2.help_text}}
+          {{form.password2}}
+          <div id="passlbl" style="color: orangered"></div>
+          <br /><br />
+
+          {{form.ag_contact.help_text}}
+          {{form.ag_contact}}
+          <br /><br />
+
+          {{form.ag_profile_image.help_text}}
+          {{form.ag_profile_image}}
+          <br /><br />
+
+          {{form.ag_local_address.help_text}}
+          {{form.ag_local_address}}
+          <br /><br />
+
+          {{form.ag_permanent_address.help_text}}
+          {{form.ag_permanent_address}}
+          <br /><br />
+
+          Joining Date:
+          <input type="date" style='width: 728px; height: 30px; padding:4px 20px' name="date_joined" id="datenew" />
+          <script>
+              var today = new Date();
+              var dd = today.getDate();
+              var mm = today.getMonth()+1; //January is 0!
+              var yyyy = today.getFullYear();
+              if(dd<10){
+                      dd='0'+dd
+                  } 
+                  if(mm<10){
+                      mm='0'+mm
+                  } 
+              maxdate = yyyy+'-'+mm+'-'+dd;
+              document.getElementById("datenew").setAttribute("max", maxdate);
+          </script>
+          <br /><br />
+          <button class="btn btn-success btn-medium" id="register" type="submit" value="Submit" />Send Register
+          Request</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+{% endblock %}
+{% block js %}
+<script src="{% static "js/custom/tenant-ajax.js" %}"></script>
+<script src="{% static 'js/datepickerjs.js' %}"></script>
+<script>
+  $("#id_password2").keyup(function () {
+    var pas1, pas2;
+    pas1 = $('#id_password').val();
+    pas2 = $(this).val();
+    if (pas1 != pas2) {
+      $("#passlbl").html("<li>Your password is not matching.</li>");
+
+    }
+    else {
+      $("#passlbl").html("");
+    }
+
+  });
+</script>
+
+{% endblock %}

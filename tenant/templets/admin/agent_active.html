@@ -1,0 +1,98 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles %}
+{% block titleblock %}
+    Agent List
+{% endblock %}
+
+{% block bodyblock %}
+    <section id="inner-headline">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div class="inner-heading">
+                        <ul class="breadcrumb">
+                            <li><a href="{% url 'admin_index' %}">Home</a> <i class="icon-angle-right"></i></li>
+                            {% comment %} <li><a href="{% url 'admin_agent_requests' %}">Agents</a> <i class="icon-angle-right"></i></li> {% endcomment %}
+                            <li class="active">Agent Details</li>
+                        </ul>
+                        <h2>Agent Details</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="imgDiv" class="modal2">
+        <span class="close">&times;</span>
+        <img class="modal2-content" id="img01">
+        <div id="caption"></div>
+    </div>
+    <section id="container">
+        <div class="container">
+            <div class="row">
+                <div class="span11">
+    
+                    <div style="background-image: url('images/bg-01.jpg');">
+                        {% if agents %}
+                            <input placeholder="Enter agent name to search" class="span11" id="search_agent" type="text">
+                        {% endif %}
+                        <div id="tbl_agents">
+    
+                            {% if agents %}
+                                {% comment %} <input placeholder="Enter agent name to search" class="span10" id="search" type="text"> {% endcomment %}
+                                <table class="table fixed_header">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Name</th>
+                                            <th>Contact</th>
+                                            <th colspan="2">Email</th>
+                                            <th colspan="3">Address</th>
+                                            <th>Date of Request</th>
+                                            <th>Profile</th>
+                                            <th>Status</th>
+                                            <th>Reject</th>
+                                            <th>Allocate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for agent in agents %}
+                                            <tr>
+                                                <td><a href="{% url 'admin_agent_profile' agent.id %}">{{ agent.first_name }} {{ agent.last_name }}</a></td>
+                                                <td>{{ agent.ag_contact }}</td>
+                                                <td colspan="2">{{ agent.email }}</td>
+                                                <td colspan="3">{{ agent.ag_local_address }}</td>
+                                                <td>{{ agent.date_joined }}</td>
+                                                <td> <img class="pimg" src="{{ MEDIA_URL }}{{ agent.ag_profile_image }}" height="100px" width="100px"
+                                                        alt="{{ agent.username }}">
+                                                </td>
+                                            
+                                                {% if agent.is_active %} 
+                                                    <td id="td{{agent.id}}">Active</td>
+                                                    <td><input type="button" class="agent-act btn-danger btn-rounded" data-id="{{ agent.id }}" data-act="0" data-view='common' value="Retire"></td> 
+                                                {% else %} 
+                                                    <td id="td{{agent.id}}" >Retired</td>
+                                                    <td><input type="button" class="agent-act btn-success btn-rounded" data-id="{{ agent.id }}" data-act="1" data-view='common' value="Activate"></td>
+                                                {% endif %}
+                                                
+                                    
+                                                <td class="allocation">
+                                                    {% if agent.is_active %}
+                                                        <input type="button" class="agent-allocate btn-success btn-rounded" data-id="{{ agent.id }}"  value="Allocate">
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+            
+                                        {% endfor %}
+                            
+                                    </tbody>
+                                </table>
+                            
+                            {% else %}
+                                <strong>No new Requests.</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

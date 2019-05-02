@@ -1,0 +1,78 @@
+{% extends 'admin/Base.html' %}
+{% load staticfiles%}
+{% block titleblock %}Add Property
+{% endblock %}
+{% block bodyblock %}
+<section id="inner-headline">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="inner-heading">
+                    <ul class="breadcrumb">
+                        <li><a href="{% url 'admin_index' %}"><i class="icon-home"></i> Home</a> <i
+                                class="icon-angle-right"></i></li>
+                        <li class="active">Add Property</li>
+                    </ul>
+                    <h2>Add Property</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="container">
+    <div class="container">
+        <div class="row">
+            <div class="span10">
+                <strong style="color: red;"> {% autoescape off %} {{ context }}{% endautoescape %}</strong></br>
+                <strong style="color: green;">{% autoescape off %}{{ success }}{% endautoescape %}</strong>
+                <div style="background-image: url('images/bg-01.jpg');">
+                    <div>
+                        <form enctype="multipart/form-data" role="form" class="contactForm" action="" method="POST"
+                            id="AddMPForm" onsubmit="return validateForm()">
+                            {% csrf_token %}
+                            Select Master Property:
+                            <select name="pr_msp" required class="form-data" id="msp_list" style="width:75%;"
+                                placeholder="new hint" required>
+                                <option value="">Select item</option>
+                                {% for item in address_list %}
+                                <option value={{item.id}}> {{item.msp_name}} {{item.msp_address}}</option>
+                                {% endfor %}
+                            </select><br />
+
+                            <div id="property" class="hidden">
+                                </br>
+                            </div>
+
+                            <input name="pr_num" id="num" type="hidden" value="1" />
+                            Address:
+                            {% comment %} <input type="text" required name="pr_address0" /> {% endcomment %}
+                            <div class="widget" id="addresses">
+                                <div class="input-append" style="display:flex;">
+                                    <input class="span2 pr_address" id="appendedInputButton" name="pr_address0"
+                                        type="text">
+                                    <button class="btn btn-theme" id="add_address" type="button"><i
+                                            class="icon-plus"></i></button>
+                                </div>
+                            </div>
+                            {% comment %} <div>
+
+                            </div> {% endcomment %}
+                            {% comment %} <a id="add_address" class="icon-plus-sign"></a> {% endcomment %}
+
+                            <br />
+                            Rent:
+                            <input type="text" required class="decimal_input" maxlength="10" name="pr_rent" /><br />
+                            Deposite:
+                            <input type="text" required class="decimal_input" maxlength="12" name="pr_deposite" /><br />
+                            Description:
+                            <textarea name="pr_description" required="True"></textarea><br />
+
+                            <button type="submit" id="btn_submit" class='btn btn-success'>Add Property</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

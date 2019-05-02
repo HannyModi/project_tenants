@@ -1,0 +1,92 @@
+{% load staticfiles%}
+
+{% if tenantlist %}
+    <table class="table fixed_header">
+        <thead>
+            <tr class="success">
+                <th>Name</th>
+                <th>Contact</th>
+                <!-- <th colspan="2">Email</th> -->
+                <th colspan="2">Address</th>
+                <th>Profile</th>
+                <th>Tenant Document</th>
+                <th>Status</th>
+                <th>Property</th>
+                <th>Action</th>                                        
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            {% for tenant in tenantlist %}
+                
+                <tr>
+                    <td><a data-toggle="tooltip" title="View Details" class='data-tn_name' href="{% url 'TenantDetails' tenant.id %}">{{ tenant.tn_name }}</a></td>
+                    <td>{{ tenant.tn_contact }}</td>
+                    <!-- <td colspan="2">{{ tenant.email }}</td> -->
+                    <td colspan="2">{{ tenant.tn_permanent_address }}</td>
+
+                    <td>
+                        <img id='p_image' class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_profile }}"
+                            style="height:50px; width:100px;"
+                            alt="{{tenant.tn_name}}'s Profile Picture">
+                        
+                    </td>
+
+                    <td>
+                        <img class="pimg" src="{{ MEDIA_URL }}{{ tenant.tn_document }}"
+                            style="height:50px; width:100px;" alt="{{tenant.tn_name}}'s Document">
+                       
+                    </td>
+                
+                    <td>
+                        {% if tenant.tn_is_active == True %}
+                            <a {% if tenant.tn_is_active == True %} class="change_status" data-toggle="tooltip" data-id='{{tenant.id}}' data-tnname='{{tenant.tn_name}}' data-status='{{tenant.tn_status}}' title="Change Status" {% endif %}>
+                            {% if tenant.tn_status == 0 %}Property Not Allocated{% elif tenant.tn_status == 1 %}Visit to property{% elif tenant.tn_status == 2 %}deal Accepted aggrement under process
+                            {% elif tenant.tn_status == 3 %}Property Handovered{% endif %}
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if tenant.tn_is_active == True %}
+                            {% if tenant.tn_status == 2 or tenant.tn_status == 3 %}
+                            {{tenant.pr_address}}
+                            {% else %}
+                            Property is not allocated.
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if tenant.tn_is_active == True %}
+                            {% if tenant.tn_status == 3 %}
+                                <div class="dropdown">
+                                    <button data-tid="{{ tenant.id }}" class="btn btn-danger btn-rounded btn-small dropdownlink">Option</button>
+                                    <div class="dropdown-content">
+                                        <a data-tid="{{ tenant.id }}" data-toggle="tooltip" title="Deallocate Property from Tenant" class="deallocate_tenant"> Deallocate </a>
+                                        <a data-tid="{{ tenant.id }}" class="add_rent" data-toggle="tooltip" title="Add Rent">Rent</a>
+                                    </div>
+                                </div>
+                            {% elif tenant.tn_status == 2 %}
+                            <button data-tid="{{ tenant.id }}"  class="btn btn-info btn-rounded btn-small allocate_tenant">Handover</button>
+                            {% elif tenant.tn_status == 1 or tenant.tn_status == 0  %}
+                            <button data-tid="{{ tenant.id }}"  class="btn btn-success btn-rounded btn-small allocate_tenant">Allocate</button>
+                            {% endif %}
+                        {% endif %}
+
+                        
+                    </td>
+                    <td>
+                    {% if tenant.tn_is_active == True %}
+                        <button data-id="{{tenant.id}}" class="btn btn-danger btn-rounded btn-small deactivate" id="dectivate" >Remove</button>
+                        {% else %}
+                        <button data-id="{{tenant.id}}" class="btn btn-success btn-rounded btn-small activate" id="activate" >Activate</button>
+                    {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    There are No Tenants
+{% endif %}
